@@ -3,6 +3,9 @@ package ressource;
 import java.util.*;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
+import collision.Collision;
 import game.Chercheur;
 import game.Entite;
 
@@ -44,7 +47,7 @@ public class Champ extends FormeGeometrique implements Serializable {
     public static List<Entite> peoplesInChamp(Champ c, List<Entite> v) {
         List<Entite> personnesDansChamp = new ArrayList<Entite>();
         for (Entite personne : v) {
-            if (personne.isInChamp(c)) {
+            if (Collision.isInChamp(personne,c)) {
                 personnesDansChamp.add(personne);
             }
         }
@@ -52,33 +55,30 @@ public class Champ extends FormeGeometrique implements Serializable {
         return personnesDansChamp;
     }
     
-    public void show(Graphics g){
+    public void show(Graphics g) {
         Rectangle boundingBox = this.getBoundingBox();
 
-        if(this.type.equals("gold")){
-        	if (boundingBox != null) {
-                int x = boundingBox.x;
-                int y = boundingBox.y;
-                int width = boundingBox.width;
-                int height = boundingBox.height;
-
-                // Utilisation des coins du rectangle pour former un pentagone approximatif
-                int[] xPoints = {x + width / 2, x + width, x + (int) (width * 0.8), x + (int) (width * 0.2), x};
-                int[] yPoints = {y, y + (int) (height * 0.3), y + height, y + height, y + (int) (height * 0.3)};
-
-                Polygon pentagon = new Polygon(xPoints, yPoints, 5);
-
-                g.setColor(Color.YELLOW);
-                g.drawPolygon(pentagon);
-        }
-        	} else {
-            if(this.type.equals("wood")){
-                g.setColor(new Color(204, 102, 0));
-            } else if(this.type.equals("ground")){
-                g.setColor(Color.white);
+        if (this.type.equals("gold")) {
+            try {
+                Image image = ImageIO.read(new File("C:\\Users\\HENINTSOA\\Documents\\github\\RATAH\\JEUX\\src\\image\\or.png")); // Remplacez par votre chemin d'image pour "gold"
+                g.drawImage(image, boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height, null);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            g.drawRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
-            
+        } else if (this.type.equals("wood")) {
+            try {
+                Image image = ImageIO.read(new File("C:\\Users\\HENINTSOA\\Documents\\github\\RATAH\\JEUX\\src\\image\\forets.png")); // Remplacez par votre chemin d'image pour "wood"
+                g.drawImage(image, boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (this.type.equals("ground")) {
+            try {
+                Image image = ImageIO.read(new File("C:\\Users\\HENINTSOA\\Documents\\github\\RATAH\\JEUX\\src\\image\\tany.png")); // Remplacez par votre chemin d'image pour "ground"
+                g.drawImage(image, boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
+    }    
 }

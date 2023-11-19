@@ -1,0 +1,27 @@
+je veux creer une jeux voici la conception et du doit la creer
+
+Le jeux est sur java
+
+-creer une fenetre java et ajoute une panel noir sur la fenetre
+
+-ajoute trois champ au milieu du meme panel une champ terrain en pentagone une champ d'or en rectangle et une champ de bois en rectangle et mets le champ terrain au milieu du champ d'or et du champ de bois pour dessiner les dessin du terrain,or,bois utilise une suite de point creer une fonction dynamique pour ca
+
+-apres avoir creer les champ creer moi des central pour creer les entite
+
+il y a deux civilisation et dans chacun des civilisation il y a une central population pour creer les population une central pour creer les militaire et une central pour creer les chercheur et une hopital pour chacun des civilisation  il y a deux civilisation donc creer moi les central et l'hopital de la premiere civilisation a gauche et pour l'autre civilisation et dessine les en carre
+
+-creer moi maintenant les entite population,militaire,chercheur et dessine les en petite rond et ajoute moi une zone sur chaque entite et chaque entite peut bouger grace a une listener mouse drag
+
+-Maintenant ajoute une listener sur les central pour creer les entite et une population coute 10, une militaire coute 50 et une cherheur coute 100 mais ajoute une montant de debut 100 pour chaque civilisation 
+
+-et ajoute une ressource a obtenir les entite sont sur les champ sur le terrain 10 sur le bois 15 et sur l'or 50 et si les entite reste sur les champ l'argent de son civilisation augmente par seconde et ajoute un peut de logique si il y a deux entite sur les champ en multiplie les ressource en deux 
+
+
+-maintenant ajoute une collision entre les deux civilisation seul les militaire peut attaquer si on deplace le militaire vers les entite adverse et si les entite sont dans la zone du militaire les vie des entite diminue par seconde mais si une militaire attaque une militaire leur vie diminue ensemble car les militaire a une attaque mais ajoute une logique si une militaire attaque deux entite l'attaque du militaire est divise par deux mais si deux militaire attaque une seul entite la vie de cette entite est divise par deux par seconde et si les entite sont mord il se teleporte vers l'hopital et son vie augmente par seconde mais l'hopital ne peux contenir que trois entite s'il y a 4 mord les trois entite se teleporte vers l'hopital et le dernier entite mort disparait a jamais et jeux peux sortir les entite dans l'hopital
+
+
+
+
+ 
+
+

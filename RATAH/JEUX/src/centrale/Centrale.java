@@ -12,12 +12,13 @@ import game.Militaire;
 import game.Population;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import java.io.*;
 public class Centrale implements Serializable {
     Civilisation clan;
     String type;
     Rectangle caserneRect;
-    Rectangle hopital;
     final double militaire = 75.0 , chercheur = 100 , civil = 50;
     
     public Centrale(){}
@@ -43,14 +44,6 @@ public class Centrale implements Serializable {
     public String getType(){
         return type;
     }
-    
-    public Rectangle getHopital() {
-		return hopital;
-	}
-
-	public void setHopital(Rectangle hopital) {
-		this.hopital = hopital;
-	}
 
 	public Rectangle getCaserneRect(){
         return caserneRect;
@@ -101,8 +94,25 @@ public class Centrale implements Serializable {
     }
     
     public void show(Graphics g) {
-        g.setColor(Color.red);
+        g.setColor(Color.RED);
         g.drawRect(this.getCaserneRect().x, this.getCaserneRect().y, this.getCaserneRect().width, this.getCaserneRect().height);
 
+        try {
+            Image image = ImageIO.read(new File("C:\\Users\\HENINTSOA\\Documents\\github\\RATAH\\JEUX\\src\\image\\cas.png")); // Remplacez par votre chemin d'image
+
+            // Dimension de l'image redimensionnée
+            int imageWidth = this.getCaserneRect().width;
+            int imageHeight = this.getCaserneRect().height;
+
+            int x = this.getCaserneRect().x;
+            int y = this.getCaserneRect().y;
+
+            g.drawImage(image, x, y, imageWidth, imageHeight, null); // Dessiner l'image redimensionnée
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+
+
 }

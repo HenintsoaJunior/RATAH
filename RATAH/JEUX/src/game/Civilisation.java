@@ -2,11 +2,13 @@ package game;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.util.List;
 
 public class Civilisation implements Serializable{
     String nameClan;
     double resource = 100;
     Color color;
+    
     public Civilisation(){}
     public Civilisation(String nameClan){
         this.nameClan=nameClan;

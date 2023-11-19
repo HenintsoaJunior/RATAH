@@ -1,12 +1,16 @@
 package run;
 
 
+import java.awt.Point;
 import java.lang.*;
 import java.util.List;
 import java.util.Vector;
 
+import collision.Collision;
 import game.Chercheur;
+import game.Civilisation;
 import game.Entite;
+import game.Hopital;
 import game.Militaire;
 import game.Population;
 import ressource.Champ;
@@ -23,9 +27,10 @@ public class Run implements Runnable {
     int coolDown;
     List<Entite> listePersonne;
     List<Champ> listeChamps;
+    List<Hopital> listeHopital;
     
     
-    public Run(List<Entite> listePersonne, List<Champ> listeChamps) {
+    public Run(List<Entite> listePersonne, List<Champ> listeChamps,List<Hopital> listeHopital) {
         this.currentTime = 0;
         this.running = true;
         this.fightingTimeCounter = 1;
@@ -33,6 +38,7 @@ public class Run implements Runnable {
         this.testCounter=2;
         this.listePersonne = listePersonne;
         this.listeChamps = listeChamps;
+        this.listeHopital=listeHopital;
     }
 
     public void run() {
@@ -43,15 +49,16 @@ public class Run implements Runnable {
             this.testCounter++;
             this.farming();     // method to handle some event each second
             this.fight();
-            this.test();
+            this.test(listeHopital,listePersonne);
             this.flee();
             
             try 
-            { Thread.sleep(500); } //1000 for 1 second
+            { Thread.sleep(1000); } // Attendre une seconde
             catch (Exception e)  
             { e.printStackTrace();}
         }
     }
+
 
     public void farming() {
         // periodique event
@@ -59,7 +66,7 @@ public class Run implements Runnable {
         if (timeCounter == this.coolDown) {
                 for (Champ champ : listeChamps) {
                     for(Entite p : listePersonne){
-                        if(champ.getClaimer().contains(p) && !p.isInChamp(champ)){
+                        if(champ.getClaimer().contains(p) && !Collision.isInChamp(p,champ)){
                             ((Chercheur)p).removeSearcherBost(champ);
                         }
                     }
@@ -80,12 +87,12 @@ public class Run implements Runnable {
     }
 
     public void fight(){
-        System.out.println("fightingCounter = "+(fightingTimeCounter == this.coolDown));
+        //System.out.println("fightingCounter = "+(fightingTimeCounter == this.coolDown));
         if(fightingTimeCounter == this.coolDown){
             for(Entite p : listePersonne){
-                System.out.println("detecting police: "+p.getRole().equals("police"));
+                //System.out.println("detecting police: "+p.getRole().equals("police"));
                 if(p.getRole().equals("police")){
-                    List<Entite> allperson =  p.getPeopleInFieldOfAttack(listePersonne);
+                    List<Entite> allperson =  Collision.getPeopleInFieldOfAttack(p, listePersonne);
                      System.out.println(allperson.size());
                     ((Militaire)p).kill(allperson);
                 }
@@ -94,19 +101,52 @@ public class Run implements Runnable {
         }
     }
 
-    public void test() {
+    public void test(List<Hopital> listeHopital, List<Entite> listePersonne) {
         for (int i = 0; i < listePersonne.size(); i++) {
             Entite entite = listePersonne.get(i);
             if (entite.getVie() <= 0) {
-            	
-                if (!entite.isAtHospital(listePersonne)) {
-                    
-                    entite.moveToHospital(); 
-                  
-                } else {
-                    // Si l'entité est à l'hôpital et que sa vie est à 0, augmentez sa vie de 1 par seconde
-                    if (entite.getVie() == 0) {
-                        entite.setVie(entite.getVie() + 1); // Augmentation de la vie
+                teleportToHospital(listeHopital, listePersonne, entite); // Téléporter l'entité à l'hôpital si nécessaire
+
+                // Après la téléportation, vérifie si l'entité est encore présente dans la liste
+                boolean stillInList = listePersonne.contains(entite);
+
+                // Si l'entité n'est plus dans la liste après la téléportation, ajuste l'index
+                if (!stillInList) {
+                    i--; // Décrémentation pour compenser la suppression de l'entité de la liste
+                }
+            }
+        }
+    }
+
+
+
+    
+    public void teleportToHospital(List<Hopital> listeHopital, List<Entite> listePersonne, Entite entite) {
+        if (entite.getVie() <= 0) {
+            boolean teleporte = false; // Pour vérifier si l'entité a été téléportée
+            boolean hopitalPlein = true; // Pour vérifier si l'hôpital est plein
+
+            for (Hopital hopital : listeHopital) {
+                if (hopital.getClan().equals(entite.getCivilisation()) && hopital.peutAccueillirEntite()) {
+                    hopital.ajouterEntite(); // Augmente le compteur d'entités dans l'hôpital
+                    entite.setPosition(new Point((int) hopital.getHopitalRect().getCenterX(), (int) hopital.getHopitalRect().getCenterY()));
+                    entite.setVie(entite.getVieMax());
+                    System.out.println("Entité téléportée vers l'hôpital !");
+                    teleporte = true; // Met à jour le statut de téléportation
+                    hopitalPlein = false; // Met à jour le statut de l'hôpital (il n'est plus plein)
+                    break;
+                }
+            }
+
+            if (!teleporte && hopitalPlein) {
+                System.out.println("L'hôpital est plein, retrait des entités mordues...");
+
+                // Suppression des entités mordues de la liste
+                for (int i = listePersonne.size() - 1; i >= 0; i--) {
+                    Entite e = listePersonne.get(i);
+                    if (e.getVie() <= 0) {
+                        listePersonne.remove(i);
+                        System.out.println("Entité retirée de la liste: " + e);
                     }
                 }
             }
@@ -114,20 +154,22 @@ public class Run implements Runnable {
     }
 
 
+
     public void flee(){
         for(Entite p : listePersonne){
             for (Champ champ : listeChamps) {
-                if(!(p.isInChamp(champ))){
+                if(!(Collision.isInChamp(p,champ))){
                     if(p.getRole().equals("civil") || p.getRole().equals("chercheur")){
-                        List<Entite> allperson =  p.getPeopleInFieldOfVision(listePersonne);
+                        List<Entite> allperson =  Collision.getPeopleInFieldOfVision(p,listePersonne);
                         if(allperson.size() !=0){
-                            p.setPosition(Entite.pointDeFuite(p.getPosition(),allperson));
+                            p.setPosition(Collision.pointDeFuite(p.getPosition(),allperson));
                         }
                     }
                 }
             }
         }
     }
+    
     public void stop() 
     { running = false; }
 

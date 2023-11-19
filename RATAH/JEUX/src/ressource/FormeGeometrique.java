@@ -25,7 +25,33 @@ public class FormeGeometrique implements Serializable{
     }
   
 
+    public double calculerCirconference(List<Point> circonference) {
+        if (circonference == null || circonference.size() < 2) {
+            return 0.0; // Gérer les cas où il n'y a pas assez de points pour former une circonférence
+        }
 
+        double circonferenceTotal = 0.0;
+
+        for (int i = 1; i < circonference.size(); i++) {
+            Point pointActuel = circonference.get(i);
+            Point pointPrecedent = circonference.get(i - 1);
+
+            // Calcul de la distance entre deux points consécutifs
+            double distance = pointActuel.distance(pointPrecedent);
+
+            // Ajout de la distance à la circonférence totale
+            circonferenceTotal += distance;
+        }
+
+        // Ajout de la distance entre le dernier et le premier point pour fermer la circonférence
+        Point premierPoint = circonference.get(0);
+        Point dernierPoint = circonference.get(circonference.size() - 1);
+        circonferenceTotal += dernierPoint.distance(premierPoint);
+
+        return circonferenceTotal;
+    }
+
+    
     public Rectangle getBoundingBox() {
         if (circonference == null || circonference.isEmpty()) {
             return null;
@@ -47,34 +73,5 @@ public class FormeGeometrique implements Serializable{
         int height = maxY - minY;
 
         return new Rectangle(minX, minY, width, height);
-    }
-    
-    public Polygon getBoundingTriangle() {
-        if (circonference == null || circonference.size() < 3) {
-            return null;
-        }
-
-        // Creation d'un triangle base sur les trois premiers points de la liste
-        Polygon triangle = new Polygon();
-        triangle.addPoint(circonference.get(0).x, circonference.get(0).y);
-        triangle.addPoint(circonference.get(1).x, circonference.get(1).y);
-        triangle.addPoint(circonference.get(2).x, circonference.get(2).y);
-   
-        
-
-        return triangle;
-    }
-    public Polygon getBoundingHexagon() {
-        if (circonference == null || circonference.size() < 6) {
-            return null;
-        }
-
-        // Creation d'un hexagone base sur les six premiers points de la liste
-        Polygon hexagon = new Polygon();
-        for (int i = 0; i < 6; i++) {
-            hexagon.addPoint(circonference.get(i).x, circonference.get(i).y);
-        }
-
-        return hexagon;
     }
 }

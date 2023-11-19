@@ -7,6 +7,7 @@ import java.util.Vector;
 import centrale.Centrale;
 import game.Civilisation;
 import game.Entite;
+import game.Hopital;
 import ressource.Champ;
 
 import java.io.*;
@@ -16,16 +17,17 @@ public class Plan implements Serializable{
     List<Centrale> casernes;
     List<Entite> personnes;
     List<Civilisation> clans;
-    List<Centrale> hopital;
+    List<Hopital> hopital;
     
 
     
-    public Plan(List<Champ> champs, List<Centrale> casernes, List<Entite> personnes, List<Civilisation> clans) {
+    public Plan(List<Champ> champs, List<Centrale> casernes,List<Hopital> hopital, List<Entite> personnes, List<Civilisation> clans) {
 		super();
 		this.champs = champs;
 		this.casernes = casernes;
 		this.personnes = personnes;
 		this.clans = clans;
+		this.hopital=hopital;
 	}
 	public List<Champ> getChamps() {
 		return champs;
@@ -51,11 +53,12 @@ public class Plan implements Serializable{
 	public void setClans(List<Civilisation> clans) {
 		this.clans = clans;
 	}
-	public List<Centrale> getHopital() {
+	public List<Hopital> getHopital() {
 		return hopital;
 	}
-	public void setHopital(List<Centrale> hopital) {
+	public void setHopital(List<Hopital> hopital) {
 		this.hopital = hopital;
 	}
+	
 	
 }
