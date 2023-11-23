@@ -20,7 +20,40 @@ public class Champ extends FormeGeometrique implements Serializable {
     String type;
     List<Chercheur> claimer = new ArrayList<Chercheur>();
     Map<String,Double> claiming =new HashMap<>();
-    public Champ(){}
+    private int width = 40; // Largeur par défaut à 40
+    private int height = 40; // Hauteur par défaut à 40
+
+    public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public Map<String, Double> getClaiming() {
+		return claiming;
+	}
+	public void setClaiming(Map<String, Double> claiming) {
+		this.claiming = claiming;
+	}
+	public int getWidth() {
+		return width;
+	}
+	public void setWidth(int width) {
+		this.width = width;
+	}
+	public int getHeight() {
+		return height;
+	}
+	public void setHeight(int height) {
+		this.height = height;
+	}
+	public void setProductivite(double productivite) {
+		this.productivite = productivite;
+	}
+	public void setClaimer(List<Chercheur> claimer) {
+		this.claimer = claimer;
+	}
+	public Champ(){}
     public Champ(List<Point> v,String type){
         super(v);
         this.type=type;
@@ -47,13 +80,15 @@ public class Champ extends FormeGeometrique implements Serializable {
     public static List<Entite> peoplesInChamp(Champ c, List<Entite> v) {
         List<Entite> personnesDansChamp = new ArrayList<Entite>();
         for (Entite personne : v) {
-            if (Collision.isInChamp(personne,c)) {
-                personnesDansChamp.add(personne);
-            }
+            if (Collision.isInChamp(personne,c)) {      
+            	personnesDansChamp.add(personne);
+            
+            }   
         }
 
         return personnesDansChamp;
     }
+    
     
     public void show(Graphics g) {
         Rectangle boundingBox = this.getBoundingBox();

@@ -62,6 +62,7 @@ public class Centrale implements Serializable {
         }
         return null;
     }
+    
     public Population generateCivilNormale(Point p)throws Exception{
         if(this.test(civil)){
             this.clan.setResource((this.clan.getResource())-civil);
@@ -69,6 +70,7 @@ public class Centrale implements Serializable {
         }
         return null;
     }
+    
     public Chercheur generateChercheur(Point p)throws Exception{
         if(this.test(chercheur)){
             this.clan.setResource((this.clan.getResource())-chercheur);
@@ -76,6 +78,7 @@ public class Centrale implements Serializable {
         }
         return null;
     }
+    
     public void isMousePressed(Centrale c,List<Entite> p,MouseEvent e)throws Exception{
     	Point initPosition = new Point((int) (caserneRect.getX() -1), (int) (caserneRect.getY() -1));
     	if (this.caserneRect.contains(e.getX(), e.getY())) {
@@ -92,27 +95,22 @@ public class Centrale implements Serializable {
             }
         }
     }
-    
     public void show(Graphics g) {
         g.setColor(Color.RED);
-        g.drawRect(this.getCaserneRect().x, this.getCaserneRect().y, this.getCaserneRect().width, this.getCaserneRect().height);
 
-        try {
-            Image image = ImageIO.read(new File("C:\\Users\\HENINTSOA\\Documents\\github\\RATAH\\JEUX\\src\\image\\cas.png")); // Remplacez par votre chemin d'image
+        int originalWidth = this.getCaserneRect().width; // Largeur originale de la zone de dessin
+        int originalHeight = this.getCaserneRect().height; // Hauteur originale de la zone de dessin
 
-            // Dimension de l'image redimensionnée
-            int imageWidth = this.getCaserneRect().width;
-            int imageHeight = this.getCaserneRect().height;
+        int desiredCenterWidth = 40; // Nouvelle largeur du centre
+        int desiredCenterHeight = 40; // Nouvelle hauteur du centre
 
-            int x = this.getCaserneRect().x;
-            int y = this.getCaserneRect().y;
+        int x = this.getCaserneRect().x + 50; // Position X de départ (décalage de 50 pixels vers la droite)
+        int y = this.getCaserneRect().y + (originalHeight - desiredCenterHeight) / 2; // Centrage vertical
 
-            g.drawImage(image, x, y, imageWidth, imageHeight, null); // Dessiner l'image redimensionnée
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        int newWidth = desiredCenterWidth;
+        int newHeight = desiredCenterHeight;
+
+        g.drawRect(x, y, newWidth, newHeight); // Dessiner le rectangle redimensionné
     }
-
-
 
 }

@@ -31,12 +31,7 @@ public class DessinPlan extends JPanel implements Serializable {
         Thread timerThread = new Thread(timer);
         timerThread.start();
 
-        try {
-            backgroundImage = ImageIO.read(new File("C:\\Users\\HENINTSOA\\Documents\\github\\RATAH\\JEUX\\src\\image\\fond.jpg")); // Charger l'image ici
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+       
         refreshTimer = new Timer(refreshInterval, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -44,7 +39,10 @@ public class DessinPlan extends JPanel implements Serializable {
             }
         });
         refreshTimer.start();
+    
+       
     }
+    
 
     public Plan getPlan() {
         return plan;
@@ -53,12 +51,10 @@ public class DessinPlan extends JPanel implements Serializable {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-        } else {
+        
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, getWidth(), getHeight());
-        }
+        
 
         for (Champ champ : plan.getChamps()) {
             champ.show(g);

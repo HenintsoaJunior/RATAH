@@ -29,15 +29,19 @@ public class Plan implements Serializable{
 		this.clans = clans;
 		this.hopital=hopital;
 	}
+    
 	public List<Champ> getChamps() {
 		return champs;
 	}
+	
 	public void setChamps(List<Champ> champs) {
 		this.champs = champs;
 	}
+	
 	public List<Centrale> getCasernes() {
 		return casernes;
 	}
+	
 	public void setCasernes(List<Centrale> casernes) {
 		this.casernes = casernes;
 	}
@@ -53,12 +57,12 @@ public class Plan implements Serializable{
 	public void setClans(List<Civilisation> clans) {
 		this.clans = clans;
 	}
+	
 	public List<Hopital> getHopital() {
 		return hopital;
 	}
+	
 	public void setHopital(List<Hopital> hopital) {
 		this.hopital = hopital;
-	}
-	
-	
+	}	
 }

@@ -11,34 +11,38 @@ import dessin.DessinPlan;
 import files.File;
 import listener.Listener;
 
-public class Fenetre extends JFrame{
-	DessinPlan d;
-	
-	public DessinPlan getPlanDrawer(){
-		return d;
-	}
-	public void setPlanDrawer(DessinPlan e){
-		getContentPane().setLayout(new BorderLayout());
-		this.d=e;
-		add(this.d);
-	}
-	public Fenetre(){
-		setTitle("MY GAME");
-		
-		Dimension dimension=Toolkit.getDefaultToolkit().getScreenSize();
-		setSize(dimension);
-		setLocationRelativeTo(null);
-		setLayout(new FlowLayout());
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
-		addWindowListener(new WindowAdapter() {
+public class Fenetre extends JFrame {
+    DessinPlan d;
+
+    public DessinPlan getPlanDrawer() {
+        return d;
+    }
+
+    public void setPlanDrawer(DessinPlan e) {
+        getContentPane().setLayout(new BorderLayout());
+        this.d = e;
+        add(this.d);
+    }
+
+    public Fenetre() {
+        setTitle("MY GAME");
+
+        // Définir la taille de la fenêtre comme 200x300 pixels
+        setSize(600, 500);
+
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
+        addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 File.save(d.getPlan());
             }
         });
-	}
-	public  void myMouseListeneradd(Listener l){
-		this.addMouseListener(l);
-		this.addMouseMotionListener(l);
-	}
+    }
+
+    public void myMouseListeneradd(Listener l) {
+        this.addMouseListener(l);
+        this.addMouseMotionListener(l);
+    }
 }
+

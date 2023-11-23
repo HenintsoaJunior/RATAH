@@ -17,6 +17,7 @@ public class Listener extends MouseAdapter{
     public Listener(DessinPlan p) { 
         this.plan=p;
     }
+    
     public void mousePressed(MouseEvent e) {
         for (Entite personne : plan.getPlan().getPersonnes()) 
         { personne.isMousePressed(personne, e); }
@@ -30,17 +31,29 @@ public class Listener extends MouseAdapter{
         }
         plan.repaint();
     }  
+    
     public void mouseReleased(MouseEvent e) {
         for (Entite personne : plan.getPlan().getPersonnes()) 
         { personne.isMouseReleased(personne, e); }
     }
+    
     public void mouseDragged(MouseEvent e) {
-        for (int i = 0; i < plan.getPlan().getPersonnes().size(); i++) {
-            Entite draggedPersonne = plan.getPlan().getPersonnes().get(i);
+        boolean isPersonDragged = false;
+
+        for (Entite draggedPersonne : plan.getPlan().getPersonnes()) {
             if (draggedPersonne.getDragging()) {
                 draggedPersonne.updateCoord(e);
-                return;   
+                isPersonDragged = true;
+                break; // Sortir de la boucle dès qu'une personne est trouvée
             }
         }
+        
+        if (isPersonDragged) {
+        	try 
+            { Thread.sleep(0); } // Attendre une seconde
+            catch (Exception es)  
+            { es.printStackTrace();}
+            //plan.repaint();
+        }
     }
-}
+ }

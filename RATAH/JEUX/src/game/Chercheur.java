@@ -38,6 +38,7 @@ public class Chercheur extends Entite{
             }  
         }      
     }
+    
     public void removeSearcherBost(Champ champ){
         double actualProd;
         for (Map.Entry<String,Double> entry : champ.getClaming().entrySet()){

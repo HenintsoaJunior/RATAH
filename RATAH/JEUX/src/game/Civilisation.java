@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Civilisation implements Serializable{
     String nameClan;
-    double resource = 100;
+    double resource = 100000;
     Color color;
     
     public Civilisation(){}

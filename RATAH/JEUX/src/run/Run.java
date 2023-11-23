@@ -40,7 +40,7 @@ public class Run implements Runnable {
         this.listeChamps = listeChamps;
         this.listeHopital=listeHopital;
     }
-
+    
     public void run() {
         while (running) {
             this.currentTime++;      // update the time each second
@@ -59,30 +59,21 @@ public class Run implements Runnable {
         }
     }
 
-
     public void farming() {
-        // periodique event
-        List<Entite> filtred=null;
         if (timeCounter == this.coolDown) {
-                for (Champ champ : listeChamps) {
-                    for(Entite p : listePersonne){
-                        if(champ.getClaimer().contains(p) && !Collision.isInChamp(p,champ)){
-                            ((Chercheur)p).removeSearcherBost(champ);
-                        }
+            for (Champ champ : listeChamps) {
+                List<Entite> filtred = Champ.peoplesInChamp(champ, listePersonne);
+                for (Entite personne : filtred) {
+                    if (personne.getRole().equals("civil")) {
+                        ((Population) personne).work(champ);
+                        System.out.println("is working");
+                    } else if (personne.getRole().equals("chercheur")) {
+                        ((Chercheur) personne).bost(champ);
+                        System.out.println("bosted");
                     }
-                    filtred=Champ.peoplesInChamp(champ,listePersonne);
-                    for(Entite personne : filtred){
-                        if(personne.getRole().equals("civil")){
-                            ((Population)personne).work(champ);
-                            System.out.println("is working");
-                        }
-                        else if(personne.getRole().equals("chercheur")){
-                            ((Chercheur)personne).bost(champ);
-                            System.out.println("bosted");
-                        }
-                    }                     
                 }
-            timeCounter = 0;       // reset the time counter
+            }
+            timeCounter = 0;
         }
     }
 
@@ -105,6 +96,7 @@ public class Run implements Runnable {
         for (int i = 0; i < listePersonne.size(); i++) {
             Entite entite = listePersonne.get(i);
             if (entite.getVie() <= 0) {
+            	
                 teleportToHospital(listeHopital, listePersonne, entite); // Téléporter l'entité à l'hôpital si nécessaire
 
                 // Après la téléportation, vérifie si l'entité est encore présente dans la liste
@@ -120,7 +112,7 @@ public class Run implements Runnable {
 
 
 
-    
+  
     public void teleportToHospital(List<Hopital> listeHopital, List<Entite> listePersonne, Entite entite) {
         if (entite.getVie() <= 0) {
             boolean teleporte = false; // Pour vérifier si l'entité a été téléportée
@@ -152,27 +144,61 @@ public class Run implements Runnable {
             }
         }
     }
-
-
-
-    public void flee(){
-        for(Entite p : listePersonne){
+    
+    public void flee() {
+        for (Entite p : listePersonne) {
             for (Champ champ : listeChamps) {
-                if(!(Collision.isInChamp(p,champ))){
-                    if(p.getRole().equals("civil") || p.getRole().equals("chercheur")){
-                        List<Entite> allperson =  Collision.getPeopleInFieldOfVision(p,listePersonne);
-                        if(allperson.size() !=0){
-                            p.setPosition(Collision.pointDeFuite(p.getPosition(),allperson));
-                        }
-                    }
-                }
+                decideFlee(p, champ);
             }
         }
     }
+ 
+    private void handlePoliceFlee(Entite p) {
+        List<Entite> allPerson = Collision.getPeopleInFieldOfVision(p, listePersonne);
+        if (allPerson.size() != 0) {
+            double totalAdversariesLife = 0;
+            boolean shouldFlee = false;
+
+            for (Entite adversary : allPerson) {
+                totalAdversariesLife += adversary.getVie();
+            }
+
+            for (Entite adversary : allPerson) {
+                if (adversary.getVie() > p.getVie() && totalAdversariesLife > p.getVie()) {
+                    shouldFlee = true;
+                    break;
+                }
+            }
+
+            if (shouldFlee) {
+                p.setPosition(Collision.pointDeFuite(p.getPosition(), allPerson));
+            }
+        }
+    }
+    private void handleCivilOrResearcherFlee(Entite p) {
+        List<Entite> allPerson = Collision.getPeopleInFieldOfVision(p, listePersonne);
+        if (allPerson.size() != 0) {
+            p.setPosition(Collision.pointDeFuite(p.getPosition(), allPerson));
+        }
+    }
+    
+
+    private void decideFlee(Entite p, Champ champ) {
+        if (!(Collision.isInChamp(p, champ))) {
+            if (p.getRole().equals("police")) {
+                handlePoliceFlee(p);
+            } else if (p.getRole().equals("civil") || p.getRole().equals("chercheur")) {
+                handleCivilOrResearcherFlee(p);
+            }
+        }
+    }
+
     
     public void stop() 
     { running = false; }
 
+    
     public void setCoolDown(int c)
     { this.coolDown = c; }
+
 }

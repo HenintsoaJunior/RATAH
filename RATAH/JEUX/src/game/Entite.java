@@ -18,22 +18,21 @@ public class Entite implements Serializable{
     Point position;
     Ellipse2D zone;
     Ellipse2D zoneAttack;
-  
-
     double damage=1.0;
     final double vieMax=10.0;
     double vie=10.0;
     Civilisation civilisation;
     boolean dragging = false;
-    final int zoneWidth = 50;
-    final int zoneHeight = 50;
+    final int zoneWidth = 100;
+    final int zoneHeight = 100;
 
-    final int zoneAttackWidth = 30;
-    final int zoneAttackHeight = 30;
+    final int zoneAttackWidth = 60;
+    final int zoneAttackHeight = 60;
 
     final int humanWidth = 10;
     final int humanHeight = 10;
     private boolean isAtHospital;
+    private boolean Clignotant;
     
     String role;
     public Entite(){}
@@ -48,41 +47,55 @@ public class Entite implements Serializable{
     public boolean isAtHospital() {
 		return isAtHospital;
 	}
+    
 	public void setAtHospital(boolean isAtHospital) {
 		this.isAtHospital = isAtHospital;
 	}
+	
 	public void setPosition(Point point) { 
-        this.position = point;
-        this.zone.setFrame(point.getX() - (this.zoneHeight / 2), point.getY() - (this.zoneHeight / 2), this.zoneWidth, this.zoneHeight); 
-    }
+	    this.position = point;
+	    this.zone.setFrame(point.getX() - (this.zoneHeight / 2), point.getY() - (this.zoneHeight / 2), this.zoneWidth, this.zoneHeight); 
+	    this.zoneAttack.setFrame(point.getX() - (this.zoneAttackHeight / 2), point.getY() - (this.zoneAttackHeight / 2), this.zoneAttackWidth, this.zoneAttackHeight);
+	}
+
     public void updateCoord(MouseEvent e) {
-        Point p = this.getPosition();
-        p.setLocation(e.getPoint());
-        this.setPosition(p);
-        this.zoneAttack.setFrame(p.getX() - (this.zoneAttackHeight / 2), p.getY() - (this.zoneAttackHeight / 2), this.zoneAttackWidth, this.zoneAttackHeight);
+    	
+    	    try 
+            { Thread.sleep(0); 
+	            Point p = this.getPosition();
+	            p.setLocation(e.getPoint());
+	            this.setPosition(p);
+	            this.zoneAttack.setFrame(p.getX() - (this.zoneAttackHeight / 2), p.getY() - (this.zoneAttackHeight / 2), this.zoneAttackWidth, this.zoneAttackHeight);
+	        
+            } 
+            catch (Exception es)  
+            { 
+            	es.printStackTrace();
+            
+            }  
     }
-        
-    public void isMousePressed(Entite personne, MouseEvent e) {
+     
+    public boolean isMousePressed(Entite personne, MouseEvent e) {
         Point p = personne.getPosition();
         Ellipse2D zone = personne.getZone();
         if (zone.contains(e.getPoint())) {
             System.out.println("The person is pressed");
             personne.setDragging(true);
-            return;
+            return true; // Retourne true si la personne est pressée
         } else {
             System.out.println("Not pressed");
+            return false; // Retourne false si la personne n'est pas pressée
         }
     }
+
     
     public void isMouseReleased(Entite personne, MouseEvent e) { 
         personne.setDragging(false); 
     }
     
     public void show(Graphics g) {
-        Dessinateur.dessinerEntite(this, g);
-        
+        Dessinateur.dessinerEntite(this, g);   
     }
-
     public Ellipse2D getZoneAttack() {
 		return zoneAttack;
 	}
@@ -150,5 +163,12 @@ public class Entite implements Serializable{
     public double getVie(){
         return vie;
     }
+	public boolean isClignotant() {
+		return Clignotant;
+	}
+	public void setClignotant(boolean clignotant) {
+		Clignotant = clignotant;
+	}
+    
 
 }

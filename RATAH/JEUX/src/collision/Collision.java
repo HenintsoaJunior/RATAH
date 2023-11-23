@@ -10,7 +10,7 @@ import ressource.Champ;
 
 public class Collision {
 	
-	
+		
 public static List<Entite> getPeopleInFieldOfAttack(Entite entite,List<Entite> allPeople) {
         
         List<Entite> peopleInFieldOfVision = new ArrayList<>();
@@ -36,6 +36,7 @@ public static List<Entite> getPeopleInFieldOfAttack(Entite entite,List<Entite> a
         }
         return result;
     }
+	
 	public static List<Entite> getPeopleInFieldOfVision(Entite entity, List<Entite> allPeople) {
         List<Entite> peopleInFieldOfVision = new ArrayList<>();
 
@@ -52,10 +53,13 @@ public static List<Entite> getPeopleInFieldOfAttack(Entite entite,List<Entite> a
 
         return peopleInFieldOfVision;
     }
+	
     public static boolean isInFieldOfVision(Entite entity, Point otherPersonPosition) {
+    
         return entity.getZone().contains(otherPersonPosition.getX(), otherPersonPosition.getY());
     }
 
+    
     public static boolean isInFieldOfAttack(Entite entity, Point otherPersonPosition) {
         return entity.getZoneAttack().contains(otherPersonPosition.getX(), otherPersonPosition.getY());
     }
@@ -81,6 +85,14 @@ public static List<Entite> getPeopleInFieldOfAttack(Entite entite,List<Entite> a
         int fuiteY = entityPosition.y - (int) barycentreY;
 
         double facteurFuite = 0.5;
+        
+        // Limiter le déplacement en diagonale
+        if (Math.abs(fuiteX) > Math.abs(fuiteY)) {
+            fuiteY = 0;
+        } else {
+            fuiteX = 0;
+        }
+        
         fuiteX = (int) (fuiteX * facteurFuite);
         fuiteY = (int) (fuiteY * facteurFuite);
 
