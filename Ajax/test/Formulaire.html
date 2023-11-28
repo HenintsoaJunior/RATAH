@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="FormulaireForm">
+    <input type="date" name="date" id="date">
+    <select id="produit" name="produit">
+        <option value="Ravitoto">Ravitoto</option>
+        <option value="Boisson">Boisson</option>
+        <option value="Snakers">Snakers</option>
+    </select>    
+    
+    <input type="text" name="quantite" id="quantite">
+    
+    <button type="submit" id="button">Valider</button>
+    </form>
+    <p id="error" style="color:red"></p>
+    <p id="success" style="color: green;"></p>
+
+    <button id="reloadButton">Recharger</button>
+
+    <div id="listeVente">
+
+    </div>
+    <script src="Formulaire.js"></script>
+</body>
+</html>
