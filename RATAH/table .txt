@@ -1,0 +1,50 @@
+table 
+
+-- Table Clients
+CREATE TABLE Clients (
+    client_id NUMBER PRIMARY KEY,
+    nom VARCHAR(50),
+    prenom VARCHAR(50),
+    coordonnees VARCHAR(100)
+);
+
+-- Table Intermédiaires
+CREATE TABLE Intermediaires (
+    intermediaire_id NUMBER PRIMARY KEY,
+    nom VARCHAR(50),
+    prenom VARCHAR(50),
+    forfait DECIMAL(10, 2),
+    recette_minimale DECIMAL(10, 2),
+    etat VARCHAR(10)
+);
+
+-- Table Menus
+CREATE TABLE Menus (
+    menu_id NUMBER PRIMARY KEY,
+    nom_menu VARCHAR(100),
+    prix DECIMAL(10, 2),
+    prix_de_revient DECIMAL(10, 2)
+);
+
+-- Table Commandes
+CREATE TABLE Commandes (
+    commande_id NUMBER PRIMARY KEY,
+    client_id NUMBER,
+    menu_id NUMBER,
+    date_commande DATE,
+    montant DECIMAL(10, 2),
+    FOREIGN KEY (client_id) REFERENCES Clients(client_id),
+    FOREIGN KEY (menu_id) REFERENCES Menus(menu_id)
+);
+
+-- Table Transactions
+CREATE TABLE Transactions (
+    transaction_id NUMBER PRIMARY KEY,
+    client_id NUMBER,
+    intermediaire_id NUMBER,
+    montant_transaction DECIMAL(10, 2),
+    date_transaction DATE,
+    type_transaction VARCHAR(50),
+    FOREIGN KEY (client_id) REFERENCES Clients(client_id),
+    FOREIGN KEY (intermediaire_id) REFERENCES Intermediaires(intermediaire_id)
+);

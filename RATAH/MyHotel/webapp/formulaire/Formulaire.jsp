@@ -14,7 +14,8 @@
                   		<div class="input-group"></div>
     	<form action="../insert/TraitementInsert.jsp" method="post">
         <%
-            String tableName = "Reservations";
+       
+            String tableName = request.getParameter("tableNames");
         	Connection connection = GetConnection.getConnection(tableName);
         	Formulaire formGenerator = new Formulaire(connection);
             session.setAttribute("table", tableName);
@@ -29,7 +30,8 @@
         </div>
         <%
             }
-           	ConnOracle.closeConnection(connection);
+            ConnOracle.getConnectionOracle();
+        
         %>
         <p class="mb-3"></p>
         <div class="mx-auto intro-button">

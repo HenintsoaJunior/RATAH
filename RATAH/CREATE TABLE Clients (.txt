@@ -1,0 +1,80 @@
+CREATE TABLE Clients (
+    client_id NUMBER PRIMARY KEY,
+    nom VARCHAR2(50),
+    prenom VARCHAR2(50),
+    email VARCHAR2(100),
+    telephone VARCHAR2(20)
+);
+
+CREATE TABLE Intermediaires (
+    intermediaire_id NUMBER PRIMARY KEY,
+    nom VARCHAR2(50),
+    prenom VARCHAR2(50),
+    forfait NUMBER(10, 2),
+    recette_min NUMBER(10, 2),
+    argent_gagne NUMBER(10, 2) DEFAULT 0,
+    peut_travailler NUMBER(1) DEFAULT 1
+);
+
+CREATE TABLE PeriodesTravail (
+    intermediaire_id NUMBER,
+    date_debut_travail DATE,
+    date_fin_travail DATE,
+    CONSTRAINT fk_periodes_travail_intermediaire FOREIGN KEY (intermediaire_id) REFERENCES Intermediaires(intermediaire_id)
+);
+
+CREATE TABLE Menus (
+    menu_id NUMBER PRIMARY KEY,
+    nom_menu VARCHAR2(100),
+    description VARCHAR2(4000),
+    prix NUMBER(10, 2),
+    prix_intermediaire NUMBER(10, 2),
+    prix_revient NUMBER(10, 2)
+);
+
+CREATE TABLE Stock (
+    menu_id NUMBER,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    quantite NUMBER,
+    CONSTRAINT fk_stock_menu FOREIGN KEY (menu_id) REFERENCES Menus(menu_id)
+);
+
+CREATE TABLE Repas (
+    repas_id NUMBER PRIMARY KEY,
+    client_id NUMBER,
+    intermediaire_id NUMBER,
+    date_repas TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    montant_total NUMBER(10, 2),
+    CONSTRAINT fk_repas_client FOREIGN KEY (client_id) REFERENCES Clients(client_id),
+    CONSTRAINT fk_repas_intermediaire FOREIGN KEY (intermediaire_id) REFERENCES Intermediaires(intermediaire_id)
+);
+
+CREATE TABLE RepasMenus (
+    repas_id NUMBER,
+    menu_id NUMBER,
+    CONSTRAINT fk_repas_menus_repas FOREIGN KEY (repas_id) REFERENCES Repas(repas_id),
+    CONSTRAINT fk_repas_menus_menu FOREIGN KEY (menu_id) REFERENCES Menus(menu_id),
+    CONSTRAINT pk_repas_menus PRIMARY KEY (repas_id, menu_id)
+);
+
+CREATE TABLE Factures (
+    facture_id NUMBER PRIMARY KEY,
+    repas_id NUMBER UNIQUE,
+    date_facture TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    montant_total NUMBER(10, 2),
+    CONSTRAINT fk_factures_repas FOREIGN KEY (repas_id) REFERENCES Repas(repas_id)
+);
+
+CREATE TABLE Commandes (
+    commande_id NUMBER PRIMARY KEY,
+    date_commande TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE CommandesMenus (
+    commande_id NUMBER,
+    menu_id NUMBER,
+    quantite NUMBER,
+    CONSTRAINT fk_commandes_menus_commande FOREIGN KEY (commande_id) REFERENCES Commandes(commande_id),
+    CONSTRAINT fk_commandes_menus_menu FOREIGN KEY (menu_id) REFERENCES Menus(menu_id),
+    CONSTRAINT pk_commandes_menus PRIMARY KEY (commande_id, menu_id)
+);

@@ -103,7 +103,7 @@ public class Insert {
     }
     
     private static boolean isDateField(String fieldName) {
-       
+    	
         return fieldName.toLowerCase().contains("date");
     }
 }

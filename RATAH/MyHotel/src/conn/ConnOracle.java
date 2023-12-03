@@ -10,8 +10,8 @@ public class ConnOracle {
 	public static Connection getConnectionOracle() {
         String url = "jdbc:oracle:thin:@localhost:1521:xe";
         
-        String username = "hotel";
-        String password = "hotel";
+        String username = "restaurants";
+        String password = "restaurants";
         Connection connection = null;
 
         try {

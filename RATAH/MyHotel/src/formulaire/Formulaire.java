@@ -52,7 +52,7 @@ public class Formulaire {
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet.getMetaData();
     }
-
+    
     public Map<String, String> generateForm(String tableName) {
         Map<String, String> formData = new LinkedHashMap<>();
         try {
@@ -105,7 +105,7 @@ public class Formulaire {
         return isForeignKey;
     }
     
-
+ 
     private String generateForeignKeyComboBox(String tableName, String columnName) {
         StringBuilder optionsHTML = new StringBuilder("<select name='" + columnName + "' class=\"form-select\" id=\"floatingSelect\" >");
         try {
@@ -122,6 +122,7 @@ public class Formulaire {
                     int id = entry.getKey();
                     System.out.println(id);
                     String displayValue = entry.getValue();
+                    optionsHTML.append("<option value=''></option>");
                     optionsHTML.append("<option value='").append(id).append("'>").append(displayValue).append("</option>");
                 }
             }
@@ -133,7 +134,6 @@ public class Formulaire {
         return optionsHTML.toString();
     }
 
-    
     private Map<Integer, String> fetchForeignKeyValues(String tableName, String columnName) throws SQLException {
         Map<Integer, String> values = new HashMap<>();
         Connection connection = null;
@@ -163,21 +163,37 @@ public class Formulaire {
     private String getQueryForColumnName(String columnName) {
         if (columnName.equals("CLIENT_ID")) {
             return Requete.getClients();
-        } else if (columnName.equals("CHAMBRE_ID")) {
-            return Requete.getChambre();
-        }
-        return "";
+        }else if(columnName.equals("INTERMEDIAIRE_ID")) {
+        	return Requete.getIntermediaire();
+        }else if(columnName.equals("MENU_ID")) {
+        	return Requete.getMenu();
+        }else if(columnName.equals("COMMANDE_ID")){
+        	return Requete.getCommandes();
+        }else if(columnName.equals("RESTAURANT_ID")){
+        	return Requete.getRestaurants();
+        }else {
+        	return "";
+        }       
     }
 
     private String getDisplayValue(String columnName, ResultSet resultSet) throws SQLException {
         if (columnName.equals("CLIENT_ID")) {
-            return resultSet.getString("nom") + " " + resultSet.getString("prenom");
-        } else if (columnName.equals("CHAMBRE_ID")) {
-            return resultSet.getString("type");
+            return resultSet.getString("nom_client");
+        } else if (columnName.equals("INTERMEDIAIRE_ID")) {
+        	return resultSet.getString("nom_intermediaire");
+        }else if (columnName.equals("MENU_ID")) {
+        	return resultSet.getString("nom_menu");
+        }else if (columnName.equals("COMMANDE_ID")) {
+        	return resultSet.getString("COMMANDE_ID");
+        }else if (columnName.equals("RESTAURANT_ID")) {
+        	return resultSet.getString("nom");
         }
+        
+        
+        
         return "";
     }
-
+    
     private String generateUserInput(String tableName, String columnName, String columnType) {
         String inputType = mapColumnTypeToInputType(tableName, columnType, columnName);
         return "<input type=\"" + inputType + "\" name=\"" + columnName + "\" class=\"form-control\">";
@@ -188,7 +204,7 @@ public class Formulaire {
             return "text";
         } else if (columnType.equalsIgnoreCase("INT") || columnType.equalsIgnoreCase("INTEGER") || columnType.equalsIgnoreCase("serial")) {
             return "number";
-        } else if (columnType.equalsIgnoreCase("DATE")) {
+        } else if (columnType.equalsIgnoreCase("date")) {
             return "date";
         } else {
             return "text";

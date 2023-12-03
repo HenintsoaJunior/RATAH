@@ -1,0 +1,48 @@
+Restaurant
+
+Gestion Restaurant
+
+Il y a Plusieurs restaurants
+
+Dans une restaurants il y a les 
+	-Menu
+	-Commande
+	-Client 
+	-Intermediaire 
+Il y a 
+-Client Simple
+
+-Intermediaire:C'est le personne qui cherche des client
+	-Forfait :1000000AR
+	-Recette Minimum : 500000AR
+	
+-Menu
+-Prix et Prix de revient pour chaque menu
+
+-Prix Intermediaire
+
+	-Argent Intermediaire = prix final -prix intermediaire * consommer
+
+-Intermediaire : C'est le personne qui cherche des client mais le prix des menu ne change pas
+
+-Facture enregistrer intermediaire si il emene des client
+
+-il y a une source entre le client @le intermediaire
+
+-Si le client depense 200000AR  avec date On ratache ca Intermediaire
+
+-Fin du mois on total la somme de l' Intermediaire et si le total superieur a 500000AR on lui donne le milieu
+
+par exemple :avec le 500000AR il y a une coca acheter a prix final 5000AR et prix coca intermediaire 4000 AR avec 100 coca donc la somme d'argent qu'on mui donne c'est 1000AR*100
+
+-Fin du moi ou a l'instant T On regarde dans le system  :
+	-Otrina chiffre d'affaire total restaurant
+	-Otrina niala intermediare
+	-Otrina prix de revient
+	-Benefice du restaurant
+
+Si  le 500000AR n'est pas rempli donc on ne donne pas d'argent a l'Intermediaire
+
+Le forfait doit etre >10000000 ar au lieu du mois donc l'intermediaire ne travaille plus
+
+dans une restaurant on fait des commande avec des date de commande

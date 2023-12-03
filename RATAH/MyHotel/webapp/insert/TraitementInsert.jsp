@@ -32,7 +32,7 @@
     // Appel de la méthode insertData pour insérer les données dans la base de données
     boolean insertionSuccess = insertHandler.insertData(tableName, formData);
 
-   	ConnOracle.closeConnection(connection);
+   	ConnOracle.getConnectionOracle();
 
     if (insertionSuccess) {
         response.sendRedirect("confirmation.jsp");
