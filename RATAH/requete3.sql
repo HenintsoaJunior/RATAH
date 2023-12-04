@@ -6,20 +6,18 @@ JOIN Commande cmd ON m.menu_id = cmd.menu_id
 JOIN Commande_Menu cm ON cmd.commande_id = cm.commande_id
 JOIN Client c ON cmd.client_id = c.client_id;
 
-
 CREATE OR REPLACE VIEW VueDetailFacturesClient AS
 SELECT c.nom_client,
-    r.restaurant_id,
-    LISTAGG(m.nom_menu || ' (Quantité: ' || cm.quantite || ')', ', ') 
-    WITHIN GROUP (ORDER BY m.nom_menu) AS menus_commandes,
+    m.restaurant_id,
+    GROUP_CONCAT(CONCAT(m.nom_menu, ' (Quantité: ', cm.quantite, ')') ORDER BY m.nom_menu SEPARATOR ', ') AS menus_commandes,
     SUM(m.prix * cm.quantite) AS montant_total
 FROM Facture f
 JOIN Commande cmd ON f.commande_id = cmd.commande_id
 JOIN Commande_Menu cm ON cmd.commande_id = cm.commande_id
 JOIN Menu m ON cm.menu_id = m.menu_id
 JOIN Client c ON cmd.client_id = c.client_id
-JOIN Restaurant r ON m.restaurant_id = r.restaurant_id
-GROUP BY c.nom_client, r.restaurant_id;
+GROUP BY c.nom_client, m.restaurant_id;
+
 
 
 CREATE OR REPLACE VIEW VueMontantTotalCommandes AS

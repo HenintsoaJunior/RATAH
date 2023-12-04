@@ -1,7 +1,8 @@
 CREATE TABLE Restaurant (
     restaurant_id NUMBER PRIMARY KEY,
     nom VARCHAR2(100),
-    adresse VARCHAR2(200)
+    adresse VARCHAR2(200),
+	Image VARCHAR(100)
 
 );
 
@@ -12,6 +13,7 @@ CREATE TABLE Menu (
     prix NUMBER,
 	prix_intermediaire NUMBER,
     prix_revient NUMBER,
+	Image VARCHAR(100),
     FOREIGN KEY (restaurant_id) REFERENCES Restaurant(restaurant_id)
 );
 
