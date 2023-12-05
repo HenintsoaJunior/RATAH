@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="FormulaireForm">
+    <input type="date" name="date" id="date">
+
+    <select id="categorie" name="categorie">
+
+    </select>    
+    
+    <input type="text" id="produit" name="produit" list="listeProduits" autocomplete="on">
+    <datalist id="listeProduits">
+        
+    </datalist>
+    
+    <input type="text" name="prixUnitaire" id="prixUnitaire">
+    
+    <input type="text" name="quantite" id="quantite">
+
+    <button type="submit" id="button">Valider</button>
+    
+    </form>
+    <p id="error" style="color:red"></p>
+    <p id="success" style="color: green;"></p>
+
+    <div id="listeVente">
+
+    </div>
+    <script src="Formulaire.js"></script>
+</body>
+</html>
