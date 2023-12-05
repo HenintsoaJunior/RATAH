@@ -20,3 +20,10 @@ CREATE TABLE Vente (
     FOREIGN KEY (idProduit) REFERENCES Produit(idProduit),
     FOREIGN KEY (idCategorie) REFERENCES Categorie(idCategorie)
 );
+
+
+CREATE OR REPLACE VIEW VenteComplet AS SELECT v.idvente,c.nom AS Categorie, p.nom AS NomProduit,v.quantite, v.prix_unitaire, v.date_vente
+FROM Categories c
+JOIN Produits p ON c.idCategorie = p.idCategorie
+JOIN Vente v ON p.idProduit = v.idProduit;
+

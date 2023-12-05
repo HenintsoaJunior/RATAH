@@ -1,20 +1,14 @@
-// Fonction pour envoyer les données au serveur
-function sendFormDataToServer(data) {
+function createXHR(method, url, data, callback) {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'Formulaire.php', true);
+    xhr.open(method, url, true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
                 const response = JSON.parse(xhr.responseText);
-                console.log(response);
-                if (response.success) {
-                    document.getElementById('success').textContent = 'Good';
-                } else {
-                    document.getElementById('error').textContent = 'Erreur';
-                }
+                callback(response, null); // Appel de la fonction de traitement avec la réponse
             } else {
-                document.getElementById('error').textContent = 'Erreur de connexion au serveur';
+                callback(null, 'Erreur de connexion au serveur'); // Gestion de l'erreur
             }
         }
     };
@@ -22,51 +16,73 @@ function sendFormDataToServer(data) {
     xhr.send(data);
 }
 
-function prepareFormData() {
+function genererChaineRequete(donnees) {
+    const params = Object.entries(donnees)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
+    return params;
+}
+
+function envoyerFormulaireAuServeur(data) {
+    function traiterReponse(response, erreur) {
+        if (erreur) {
+            document.getElementById('error').textContent = erreur;
+        } else {
+            console.log(response);
+            if (response.success) {
+                document.getElementById('success').textContent = 'Bien';
+            } else {
+                document.getElementById('error').textContent = 'Erreur';
+            }
+        }
+    }
+
+    createXHR('POST', 'Formulaire.php', data, traiterReponse);
+}
+
+function preparerDonneesFormulaire() {
     const date = document.getElementById('date').value;
     const categorie = document.getElementById('categorie').value;
     const produit = document.getElementById('produit').value;
     const prixUnitaire = document.getElementById('prixUnitaire').value;
     const quantite = document.getElementById('quantite').value;
 
-    const data = `date=${encodeURIComponent(date)}&categorie=${encodeURIComponent(categorie)}&prixUnitaire=${encodeURIComponent(prixUnitaire)}&produit=${encodeURIComponent(produit)}&quantite=${encodeURIComponent(quantite)}`;
-    console.log(data);
-
-    sendFormDataToServer(data);
-}
-
-document.getElementById('FormulaireForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-   
-    prepareFormData();
-});
-
-
-
-function loadCategories() {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'ListeCategories.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                const categories = JSON.parse(xhr.responseText);
-                // Appel de la fonction pour peupler le menu déroulant des catégories
-                populateCategories(categories);
-                // Chargement des produits de la première catégorie (s'il y en a)
-                if(categories.length > 0) {
-                    loadProductsByCategory(categories[0].idcategorie);
-                }
-            } else {
-                alert('erreur');
-            }
-        }
+    const formData = {
+        date: date,
+        categorie: categorie,
+        produit: produit,
+        prixUnitaire: prixUnitaire,
+        quantite: quantite
     };
 
-    xhr.send(null);
+    const data = genererChaineRequete(formData);
+    console.log(data);
+
+    envoyerFormulaireAuServeur(data);
 }
 
-function populateCategories(categories) {
+
+function soumissionFormulaire(event) {
+    event.preventDefault();
+    preparerDonneesFormulaire();
+}
+
+function chargerCategories() {
+    function traiterReponse(response, erreur) {
+        if (erreur) {
+            alert(erreur);
+        } else {
+            remplirListeCategories(response);
+            if (response.length > 0) {
+                chargerProduitsParCategorie(response[0].idcategorie);
+            }
+        }
+    }
+
+    createXHR('GET', 'ListeCategories.php', null, traiterReponse);
+}
+
+function remplirListeCategories(categories) {
     const selectCategorie = document.getElementById('categorie');
     categories.forEach(category => {
         const option = document.createElement('option');
@@ -76,27 +92,20 @@ function populateCategories(categories) {
     });
 }
 
-
-function loadProductsByCategory(categoryId) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', `ListeProduitsParCategorie.php?idCategorie=${categoryId}`, true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                const products = JSON.parse(xhr.responseText);
-                
-                populateProducts(products);
-            } else {
-                // Gérer les erreurs de connexion au serveur pour les produits
-            }
+function chargerProduitsParCategorie(categoryId) {
+    function traiterReponse(response, erreur) {
+        if (erreur) {
+            // Gérer les erreurs de connexion au serveur pour les produits
+            console.error(erreur);
+        } else {
+            remplirListeProducts(response);
         }
-    };
+    }
 
-    xhr.send(null);
+    createXHR('GET', `ListeProduitsParCategorie.php?idCategorie=${categoryId}`, null, traiterReponse);
 }
 
-function populateProducts(products) {
+function remplirListeProducts(products) {
     const selectProduit = document.getElementById('produit');
     selectProduit.innerHTML = '';
 
@@ -108,33 +117,26 @@ function populateProducts(products) {
     });
 }
 
-function loadListeVente() {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'Liste.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                const response = JSON.parse(xhr.responseText);
-                // Appel de la fonction pour mettre à jour l'interface avec la liste des ventes
-                displayListeVente(response);
-            } else {
-                document.getElementById('error').textContent = 'Erreur de connexion au serveur';
-            }
+function chargerListeVente() {
+    function traiterReponse(response, erreur) {
+        if (erreur) {
+            document.getElementById('error').textContent = 'Erreur de connexion au serveur';
+        } else {
+            displayListeVente(response);
         }
-    };
+    }
 
-    xhr.send(null);
+    createXHR('GET', 'Liste.php', null, traiterReponse);
 }
 
 function displayListeVente(response) {
     const divListeVente = document.getElementById('listeVente');
     
     if (Array.isArray(response)) {
-        let tableHTML = '<table border="1"><thead><tr><th>Categorie</th><th>NomProduit</th><th>quantite</th><th>prix_unitaire</th><th>date_vente</th></tr></thead><tbody>';
+        let tableHTML = '<table border="1"><thead><tr><th>Categorie</th><th>NomProduit</th><th>quantite</th><th>prix_unitaire</th><th>date_vente</th><th>Supprimer</th></tr></thead><tbody>';
 
         response.forEach(item => {
-            tableHTML += `<tr><td>${item.categorie}</td><td>${item.nomproduit}</td><td>${item.quantite}</td><td>${item.prix_unitaire}</td><td>${item.date_vente}</td></tr>`;
+            tableHTML += `<tr><td>${item.categorie}</td><td>${item.nomproduit}</td><td>${item.quantite}</td><td>${item.prix_unitaire}</td><td>${item.date_vente}</td><td><button onclick="supprimerVente(${item.idvente})">Supprimer</button></td></tr>`;
         });
 
         tableHTML += '</tbody></table>';
@@ -144,26 +146,51 @@ function displayListeVente(response) {
     }
 }
 
+
+function modifierItem(idvente) {
+    console.log("modifier");
+}
+
+function supprimerVente(idvente) {
+    function traiterReponse(response, erreur) { 
+        if (erreur) {
+            console.error('Erreur lors de la suppression');
+            // Gérer les erreurs liées à la suppression de l'élément
+        } else {
+            refreshList(); // Recharge la liste des ventes après la suppression
+            console.log("Supprimer " + idvente);
+        }
+    }
+
+    createXHR('GET', `SupprimerVente.php?idvente=${idvente}`, null, traiterReponse);
+}
+
+// Chargement des produits lors du changement de catégorie
 document.getElementById('categorie').addEventListener('change', function(event) {
     const selectedCategoryId = event.target.value;
     if (selectedCategoryId) {
-        loadProductsByCategory(selectedCategoryId);
+        chargerProduitsParCategorie(selectedCategoryId);
     } else {
         console.log("Aucune catégorie sélectionnée.");
     }
 });
 
-loadCategories();
+// Chargement des catégories au démarrage
+chargerCategories();
 
+// Fonction de rafraîchissement de la liste des ventes
 function refreshList() {
-    loadListeVente();
+    chargerListeVente();
 }
 
-
+// Rafraîchissement de la liste des ventes au démarrage
 refreshList();
 
-submitForm();
+// Soumission du formulaire
+document.getElementById('FormulaireForm').addEventListener('submit', soumissionFormulaire);
 
-document.getElementById('reloadButton').addEventListener('click', function() {
+
+// Actualisation de la liste des ventes à intervalle régulier
+setInterval(function() {
     refreshList();
-});
+}, 1000); // Actualise toutes les 60 secondes (60000 millisecondes)
