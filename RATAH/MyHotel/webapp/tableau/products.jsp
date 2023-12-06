@@ -32,7 +32,7 @@
                             </div>
                             <img class="img-fluid d-flex mx-auto product-item-img mb-3 mb-lg-0 rounded" src="../assets/img/<%= imageMenu %>">
                             <div class="bg-faded p-5 rounded">
-                                <h2><%= prixMenu %> AR <a href="Commander.jsp">Commander</a></h2>
+                                <h2><%= prixMenu %> AR <a href="Commande.jsp">Commander</a></h2>
                             </div>
                         </div>
                     </div>

@@ -2,7 +2,7 @@ CREATE TABLE Restaurant (
     restaurant_id NUMBER PRIMARY KEY,
     nom VARCHAR2(100),
     adresse VARCHAR2(200),
-	Image VARCHAR(100)
+	Image VARCHAR2(100)
 
 );
 
@@ -13,7 +13,7 @@ CREATE TABLE Menu (
     prix NUMBER,
 	prix_intermediaire NUMBER,
     prix_revient NUMBER,
-	Image VARCHAR(100),
+	Image VARCHAR2(100),
     FOREIGN KEY (restaurant_id) REFERENCES Restaurant(restaurant_id)
 );
 
@@ -33,11 +33,9 @@ CREATE TABLE Intermediaire (
 CREATE TABLE Commande (
     commande_id NUMBER PRIMARY KEY,
     restaurant_id NUMBER,
-    menu_id NUMBER,
     client_id NUMBER,
     date_commande DATE,
     FOREIGN KEY (restaurant_id) REFERENCES Restaurant(restaurant_id),
-    FOREIGN KEY (menu_id) REFERENCES Menu(menu_id),
     FOREIGN KEY (client_id) REFERENCES Client(client_id)
 );
 
@@ -61,9 +59,6 @@ CREATE TABLE Facture (
     FOREIGN KEY (intermediaire_id) REFERENCES Intermediaire(intermediaire_id)
 );
 
-UPDATE Restaurant
-SET image = 'resto1.jpg'
-WHERE restaurant_id = 1;
 
 
 delete from facture;

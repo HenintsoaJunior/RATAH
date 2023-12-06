@@ -24,9 +24,8 @@
                   		
 					        <p class="mb-3"></p>
 					        <div class="mx-auto intro-button">
-								<a href="Tableau.jsp?tableNames=Commandes" class="btn btn-primary d-inline-block mx-auto btn-xl">Commandes</a>
 								
-								<a href="Tableau.jsp?tableNames=VueBeneficeRestaurants" class="btn btn-primary d-inline-block mx-auto btn-xl">Statistique</a>
+								<a href="ChoiceDate.jsp?tableNames=VueBeneficeRestaurants" class="btn btn-primary d-inline-block mx-auto btn-xl">Statistique</a>
 							
 					        </div>
 					               

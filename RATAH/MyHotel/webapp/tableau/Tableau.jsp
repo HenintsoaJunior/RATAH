@@ -13,10 +13,14 @@
             <div class="intro">
 				<div class="text-center intro-text p-5 rounded bg-faded" style="width: 100%;">	
 					<%
-					    String tableName = request.getParameter("tableNames");;
+					    String tableName = (String) session.getAttribute("tableNames");
+						String MoisStr = request.getParameter("mois");
+						String AnneeStr = request.getParameter("annee");
 					    String idRestaurantStr = (String) session.getAttribute("idRestaurant");
 				        int idRestaurant = Integer.parseInt(idRestaurantStr);
-					      List<Map<String, Object>> tableau = Tableau.Tableau(tableName,idRestaurant);
+				        int mois=Integer.parseInt(MoisStr);
+				        int annee=Integer.parseInt(AnneeStr);
+					    List<Map<String, Object>> tableau = Tableau.Tableau(tableName,idRestaurant,mois,annee);
 					
 					    // Obtenez les noms de colonnes à partir du premier élément du tableau s'il existe
 					    List<String> attribut = new ArrayList<>();

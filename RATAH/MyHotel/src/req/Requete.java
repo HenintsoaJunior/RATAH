@@ -40,7 +40,14 @@ public class Requete {
 	}
 	
 	public static String getStatistique(int restaurantId) {
-	    String query = "SELECT * FROM VueBeneficeRestaurants WHERE restaurant_id = " + restaurantId;
+	    String query = "SELECT * FROM VuStatistique WHERE restaurant_id = " + restaurantId;
+	    return query;
+	}
+	public static String getStatistiqueByDate(int restaurantId,int mois, int annee) {
+	    String query = "SELECT * FROM VuStatistiques " +
+	                   "WHERE restaurant_id = " + restaurantId +
+	                   " AND EXTRACT(MONTH FROM date_stat) = " + mois +
+	                   " AND EXTRACT(YEAR FROM date_stat) = " + annee;
 	    return query;
 	}
 	

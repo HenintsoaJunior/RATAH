@@ -21,8 +21,10 @@
                 String nomClient = (String) row.get("NOM_CLIENT");
                 String menusCommandes = (String) row.get("MENUS_COMMANDES"); // Assurez-vous que le chemin de l'image est correct
                 BigDecimal Montant = (BigDecimal) row.get("MONTANT_TOTAL");
+                String nomIntermediaira = (String) row.get("NOM_INTERMEDIAIRE");
 
                 %>
+                
     <section class="page-section cta">
         <div class="container">
             <div class="row">
@@ -31,6 +33,9 @@
                         <h2 class="section-heading mb-5"><span class="section-heading-upper">Come On In</span><span class="section-heading-lower">FACTURE</span></h2>
                         <ul class="list-unstyled text-start mx-auto list-hours mb-5">
                             <li class="d-flex list-unstyled-item list-hours-item"><%= nomClient %><span class="ms-auto">  :  <%= menusCommandes %></span></li>
+                            <%if(nomIntermediaira!=null){ %>
+                            <li class="d-flex list-unstyled-item list-hours-item">Nom Intermediaire<span class="ms-auto">  :  <%= nomIntermediaira %></span></li>
+                            <%} %>
                         </ul>
                         <p class="address mb-5"><em><strong><%= Montant%> Ar</strong></em></p>
                        

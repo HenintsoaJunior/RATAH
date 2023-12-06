@@ -31,11 +31,15 @@ public class Tableau {
 
 	    return data;
 	}
+	
 	public static List<Map<String, Object>> Tableau(String tableName) {
-        return Tableau(tableName,0);
+        return Tableau(tableName,0,0,0);
+    }
+	public static List<Map<String, Object>> Tableau(String tableName,int restorant_id) {
+        return Tableau(tableName,restorant_id,0,0);
     }
 	
-	public static List<Map<String, Object>> Tableau(String tableName,int restorant_id) {
+	public static List<Map<String, Object>> Tableau(String tableName,int restorant_id,int mois,int annee) {
 	    List<Map<String, Object>> data = new ArrayList<>();
 	    Connection connection = null;
 	    String selectQuery = null;
@@ -44,7 +48,7 @@ public class Tableau {
 	        connection = GetConnection.getConnection(tableName);
 
 	        if (connection != null) {
-	            selectQuery = generateQuery(tableName,restorant_id);
+	            selectQuery = generateQuery(tableName, restorant_id, mois, annee);
 	            if (selectQuery != null) {
 	                Statement statement = connection.createStatement();
 	                ResultSet resultSet = statement.executeQuery(selectQuery);
@@ -73,11 +77,11 @@ public class Tableau {
 	    return data;
 	}
 
-	private static String generateQuery(String tableName,int restorant_id) {
+	private static String generateQuery(String tableName,int restorant_id,int mois,int annee) {
 		String  selectQuery;
 	    
 		if (tableName.equals("VueBeneficeRestaurants")) {
-	        selectQuery = Requete.getStatistique(restorant_id);
+	        selectQuery = Requete.getStatistiqueByDate(restorant_id, mois, annee);
 	    }else if (tableName.equals("Commandes")) {
 	        selectQuery = Requete.getListeCommande(restorant_id);
 	    }else if (tableName.equals("Menu")) {

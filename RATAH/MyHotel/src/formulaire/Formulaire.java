@@ -14,6 +14,9 @@ import req.Requete;
 public class Formulaire {
     private Connection connection;
     private Map<String, String> customLabels = new HashMap<>();
+    
+    
+    
     private Map<String, Map<Integer, String>> foreignKeyCache = new HashMap<>();
 
 
@@ -36,15 +39,19 @@ public class Formulaire {
         Map<String, String> labelData = new HashMap<>();
         int columnCount = metaData.getColumnCount();
         for (int i = 1; i <= columnCount; i++) {
+        	
             String columnName = metaData.getColumnName(i);
             String label = customLabels.get(columnName);
+            
             if (label == null) {
                 label = columnName; // Utilisez le nom de colonne par défaut si aucun libellé personnalisé n'est spécifié
             }
+            
             labelData.put(columnName, label);
         }
         return labelData;
     }
+    
 
     private ResultSetMetaData getTableMetaData(String tableName) throws SQLException {
         String query = "SELECT * FROM " + tableName + " WHERE 1 = 0"; // We don't want to retrieve any data, just table structure
@@ -77,6 +84,7 @@ public class Formulaire {
         return formData;
     }
 
+    
     private boolean isForeignKey(String tableName, String columnName) throws SQLException {
         boolean isForeignKey = false;
         try {
