@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW VueListeCommandesRestaurants AS
-SELECT r.restaurant_id, r.nom AS nom_restaurant, c.nom_client, cmd.commande_id, m.nom_menu, cm.quantite, cmd.date_commande, f.date_facture
+SELECT r.restaurant_id, r.nom AS nom_restaurant, c.nom_client, cmd.commande_id, m.nom_menu, cm.quantite, cmd.date_commande
 FROM Restaurant r
 JOIN Menu m ON r.restaurant_id = m.restaurant_id
 JOIN Commande_Menu cm ON m.menu_id = cm.menu_id
@@ -157,6 +157,19 @@ LEFT JOIN (
     FROM VueMontantIntRestaurant
     GROUP BY restaurant_id, date_facture
 ) VIR ON r.restaurant_id = VIR.restaurant_id AND VIR.date_facture = COALESCE(VCA.date_facture, VPR.date_facture);
+
+
+CREATE OR REPLACE VIEW VuStatistique AS
+SELECT r.nom, r.restaurant_id,
+       COALESCE(SUM(VCA.chiffre_affaires), 0) AS chiffre_affaires,
+       COALESCE(SUM(VPR.prix_revient), 0) AS prix_revient,
+       COALESCE(SUM(VIR.montant_donne_resto), 0) AS montant_intermediaire,
+       COALESCE(SUM(VCA.chiffre_affaires), 0) - COALESCE(SUM(VPR.prix_revient), 0) - COALESCE(SUM(VIR.montant_donne_resto), 0) AS benefice
+FROM Restaurant r
+LEFT JOIN VueChiffreAffairesRestaurants VCA ON r.restaurant_id = VCA.restaurant_id
+LEFT JOIN VuePrixRevientRestaurants VPR ON r.restaurant_id = VPR.restaurant_id
+LEFT JOIN VueMontantIntRestaurant VIR ON r.restaurant_id = VIR.restaurant_id
+GROUP BY  r.nom, r.restaurant_id;
 
 
 SELECT *

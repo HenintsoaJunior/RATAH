@@ -105,7 +105,7 @@ LEFT JOIN Commande_Menu cm ON m.menu_id = cm.menu_id
 GROUP BY r.nom, r.restaurant_id;
 
 
-CREATE OR REPLACE VIEW VuStatistiques AS
+CREATE OR REPLACE VIEW VuStatistique AS
 SELECT r.nom, r.restaurant_id,
        COALESCE(SUM(VCA.chiffre_affaires), 0) AS chiffre_affaires,
        COALESCE(SUM(VPR.prix_revient), 0) AS prix_revient,
