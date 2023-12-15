@@ -1,3 +1,6 @@
+let isModification = false;
+let venteId = null;
+
 function createXHR(method, url, data, callback) {
     const xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
@@ -6,6 +9,7 @@ function createXHR(method, url, data, callback) {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
                 const response = JSON.parse(xhr.responseText);
+               
                 callback(response, null); // Appel de la fonction de traitement avec la réponse
             } else {
                 callback(null, 'Erreur de connexion au serveur'); // Gestion de l'erreur
@@ -14,6 +18,7 @@ function createXHR(method, url, data, callback) {
     };
 
     xhr.send(data);
+    
 }
 
 function genererChaineRequete(donnees) {
@@ -23,7 +28,7 @@ function genererChaineRequete(donnees) {
     return params;
 }
 
-function envoyerFormulaireAuServeur(data) {
+function envoyerFormulaireAuServeur(data,url) {
     function traiterReponse(response, erreur) {
         if (erreur) {
             document.getElementById('error').textContent = erreur;
@@ -37,7 +42,7 @@ function envoyerFormulaireAuServeur(data) {
         }
     }
 
-    createXHR('POST', 'Formulaire.php', data, traiterReponse);
+    createXHR('POST', url, data, traiterReponse);
 }
 
 function preparerDonneesFormulaire() {
@@ -52,13 +57,22 @@ function preparerDonneesFormulaire() {
         categorie: categorie,
         produit: produit,
         prixUnitaire: prixUnitaire,
-        quantite: quantite
+        quantite: quantite,
+        venteId: venteId
     };
 
     const data = genererChaineRequete(formData);
     console.log(data);
 
-    envoyerFormulaireAuServeur(data);
+    if (isModification) {
+       
+        envoyerFormulaireAuServeur(data, 'ModifierVente.php');
+    } else {
+       
+        envoyerFormulaireAuServeur(data, 'Formulaire.php');
+    }
+
+    isModification = false;
 }
 
 
@@ -133,10 +147,10 @@ function displayListeVente(response) {
     const divListeVente = document.getElementById('listeVente');
     
     if (Array.isArray(response)) {
-        let tableHTML = '<table border="1"><thead><tr><th>Categorie</th><th>NomProduit</th><th>quantite</th><th>prix_unitaire</th><th>date_vente</th><th>Supprimer</th></tr></thead><tbody>';
+        let tableHTML = '<table class="table table-dark table-striped"><thead><tr><th>Categorie</th><th>NomProduit</th><th>quantite</th><th>prix_unitaire</th><th>date_vente</th><th>Modifier</th><th>Supprimer</th></tr></thead><tbody>';
 
         response.forEach(item => {
-            tableHTML += `<tr><td>${item.categorie}</td><td>${item.nomproduit}</td><td>${item.quantite}</td><td>${item.prix_unitaire}</td><td>${item.date_vente}</td><td><button onclick="supprimerVente(${item.idvente})">Supprimer</button></td></tr>`;
+            tableHTML += `<tr><td>${item.categorie}</td><td>${item.nomproduit}</td><td>${item.quantite}</td><td>${item.prix_unitaire}</td><td>${item.date_vente}</td><td><button onclick="modifierItem(${item.idvente})">Modifier</button></td><td><button onclick="supprimerVente(${item.idvente})">Supprimer</button></td></tr>`;
         });
 
         tableHTML += '</tbody></table>';
@@ -146,10 +160,49 @@ function displayListeVente(response) {
     }
 }
 
-
 function modifierItem(idvente) {
-    console.log("modifier");
+    isModification = true; 
+    venteId = idvente;
+    console.log("modifier" + idvente);
+
+    // Appel AJAX pour obtenir les informations de l'élément
+    function traiterReponse(response, erreur) {
+        if (erreur) {
+            console.error(erreur);
+        } else {
+            // Remplir les champs de formulaire avec les informations de l'élément
+            response.forEach(product => {
+                let form = document.getElementById("FormulaireForm");
+                document.getElementById('date').value = product.date_vente;
+                console.log(product.idcategorie);
+                document.getElementById('categorie').value = product.idcategorie;
+                console.log("idCategorie = " + product.idcategorie);
+                document.getElementById('produit').value = product.nomproduit;
+                document.getElementById('prixUnitaire').value = product.prix_unitaire;
+                document.getElementById('quantite').value = product.quantite;
+            });
+        }
+    }
+
+    createXHR('GET', `ObtenirVente.php?idvente=${idvente}`, null, traiterReponse);
 }
+
+
+function changerBouton() {
+    var btnValider = document.getElementById('button');
+
+    if (btnValider) {
+        btnValider.style.display = 'none';
+    }
+
+    var btnModifier = document.createElement('button');
+    btnModifier.innerHTML = 'Modifier';
+    btnModifier.id = 'modifier';
+    btnModifier.type = 'submit';
+
+    document.body.appendChild(btnModifier);
+}
+
 
 function supprimerVente(idvente) {
     function traiterReponse(response, erreur) { 

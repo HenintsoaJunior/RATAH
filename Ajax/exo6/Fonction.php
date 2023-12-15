@@ -1,19 +1,32 @@
 <?php
 
-function modifierVente($conn, $idVente, $nouvellesDonnees) {
+function ObtenirVente($conn,$idVente)
+{
     try {
-        $sql = "UPDATE vente SET date_vente = :dateVente, categorie = :categorie, NomProduit = :nomProduit, prix_unitaire = :prixUnitaire, quantite = :quantite WHERE idvente = :idVente";
+        $stmt = $conn->prepare("SELECT * FROM VenteComplet WHERE idVente=:idVente");
+        $stmt->bindParam(':idVente', $idVente);
+        $stmt->execute();
+        $vente = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $vente;
+    } catch (PDOException $e) {
+        return array('error' => 'Erreur lors du chargement des publications : ' . $e->getMessage());
+    }
+}
+
+function modifierVente($conn, $idVente, $idproduit,$idCategorie,$quantite,$prix_unitaire,$date) {
+    try {
+        $sql = "UPDATE vente SET idproduit = :idproduit, idcategorie = :idcategorie, quantite = :quantite, prix_unitaire = :prix_unitaire, date_vente = :date_vente WHERE idVente = :idVente";
         
         $stmt = $conn->prepare($sql);
         
         // Liaison des valeurs avec les paramètres de la requête
-        $stmt->bindParam(':dateVente', $nouvellesDonnees['date']);
-        $stmt->bindParam(':categorie', $nouvellesDonnees['categorie']);
-        $stmt->bindParam(':nomProduit', $nouvellesDonnees['produit']);
-        $stmt->bindParam(':prixUnitaire', $nouvellesDonnees['prixUnitaire']);
-        $stmt->bindParam(':quantite', $nouvellesDonnees['quantite']);
+        $stmt->bindParam(':idproduit', $idproduit);
+        $stmt->bindParam(':idcategorie', $idCategorie);
+        $stmt->bindParam(':quantite', $quantite);
+        $stmt->bindParam(':prix_unitaire', $prix_unitaire);
+        $stmt->bindParam(':date_vente', $date);
         $stmt->bindParam(':idVente', $idVente);
-        
+          
         // Exécution de la requête
         $stmt->execute();
         
